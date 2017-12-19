@@ -414,29 +414,18 @@ Test::draw_test_image(Fbo *fbo)
 {
 	int num_h_tiles = pattern_width / fbo->config.width;
 	int num_v_tiles = pattern_height / fbo->config.height;
-	for (int h = 0; h < num_h_tiles; ++h) {
-		for (int v = 0; v < num_v_tiles; ++v) {
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER,
-					  fbo->handle);
-			fbo->set_viewport();
-			int x_offset = h * fbo->config.width;
-			int y_offset = v * fbo->config.height;
-			draw_pattern(x_offset, y_offset,
-				     fbo->config.width,
-				     fbo->config.height);
-			if (test_resolve) {
-				resolve(fbo, blit_type);
-				if (manifest_program)
-					manifest_program->run();
-			} else {
-				if (manifest_program)
-					manifest_program->run();
-				resolve(fbo,
-					GL_COLOR_BUFFER_BIT);
-			}
-
-			show(&resolve_fbo, x_offset, y_offset);
-		}
+	for (int i = 0; i < 100000; i++) {
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER,
+				  fbo->handle);
+		fbo->set_viewport();
+		int x_offset = 0;
+		int y_offset = 0;
+		draw_pattern(x_offset, y_offset,
+			     fbo->config.width,
+			     fbo->config.height);
+		resolve(fbo,
+			GL_COLOR_BUFFER_BIT);
+		show(&resolve_fbo, x_offset, y_offset);
 	}
 }
 
@@ -595,7 +584,7 @@ bool
 Test::run()
 {
 	draw_test_image(&multisample_fbo);
-	draw_reference_image();
+	/* draw_reference_image(); */
 	return measure_accuracy();
 }
 
